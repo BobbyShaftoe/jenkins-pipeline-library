@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-106976102-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'UA-106976102-1');
+</script>
+
+  
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="google-site-verification" content="6tJr35lHRFHfwzMEncIORAOQihPHbs6u3K4LvmD1yGY" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3">
+
+  <title>
+    
+      Exploring Jenkins Pipelines: Shared Libraries &middot; Automating Guy
+    
+  </title>
+
+  <link rel="stylesheet" href="https://automatingguy.com/public/css/poole.css">
+  <link rel="stylesheet" href="https://automatingguy.com/public/css/syntax.css">
+  <link rel="stylesheet" href="https://automatingguy.com/public/css/hyde.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:500,Open+Sans">
+  <link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet">  
+
+  <link rel="icon" href="https://automatingguy.com/public/img/favicon-32.png" sizes="32x32">
+  <link rel="icon" href="https://automatingguy.com/public/img/favicon-57.png" sizes="57x57">
+  <link rel="icon" href="https://automatingguy.com/public/img/favicon-76.png" sizes="76x76">
+  <link rel="icon" href="https://automatingguy.com/public/img/favicon-96.png" sizes="96x96">
+  <link rel="icon" href="https://automatingguy.com/public/img/favicon-128.png" sizes="128x128">
+  <link rel="icon" href="https://automatingguy.com/public/img/favicon-228.png" sizes="228x228">
+  <link rel="shortcut icon" sizes="196x196" href="https://automatingguy.com/public/img/favicon-196.png">
+  <link rel="apple-touch-icon" href="https://automatingguy.com/public/img/favicon-120.png" sizes="120x120">
+  <link rel="apple-touch-icon"  href="https://automatingguy.com/public/img/favicon-152.png" sizes="152x152">
+  <link rel="apple-touch-icon" href="https://automatingguy.com/public/img/favicon-180.png" sizes="180x180">
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+  <meta name="msapplication-TileImage" content="/public/img/favicon-144.png">
+
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://automatingguy.com/atom.xml">
+
+  
+
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js" async defer></script>
+<script defer>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#efefef",
+      "text": "#404040"
+    },
+    "button": {
+      "background": "#000000"
+    }
+  },
+  "theme": "classic",
+  "position": "bottom-right"
+})});
+</script>
+  <!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Exploring Jenkins Pipelines: Shared Libraries | Automating Guy</title>
+<meta property="og:title" content="Exploring Jenkins Pipelines: Shared Libraries" />
+<meta name="author" content="Michał Krzyżanowski" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Continuing the mini-series about Jenkins Pipelines, it is time to take a closer look at how our pipelines can follow the DRY (Don’t Repeat Yourself) principle when our scripts are getting bigger and bigger, and we need to share parts of them across multiple projects. In this post, we will explore the concept of Jenkins Shared Libraries - a mechanism that allows keeping bits of our pipeline scripts within reusable units." />
+<meta property="og:description" content="Continuing the mini-series about Jenkins Pipelines, it is time to take a closer look at how our pipelines can follow the DRY (Don’t Repeat Yourself) principle when our scripts are getting bigger and bigger, and we need to share parts of them across multiple projects. In this post, we will explore the concept of Jenkins Shared Libraries - a mechanism that allows keeping bits of our pipeline scripts within reusable units." />
+<link rel="canonical" href="index.html" />
+<meta property="og:url" content="https://automatingguy.com/2017/12/29/jenkins-pipelines-shared-libraries/" />
+<meta property="og:site_name" content="Automating Guy" />
+<meta property="og:image" content="https://automatingguy.com/public/img/social/image-og.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-12-29T00:00:00+00:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@automatingguy" />
+<meta name="twitter:creator" content="@https://twitter.com/automatingguy" />
+<script type="application/ld+json">
+{"name":null,"description":"Continuing the mini-series about Jenkins Pipelines, it is time to take a closer look at how our pipelines can follow the DRY (Don’t Repeat Yourself) principle when our scripts are getting bigger and bigger, and we need to share parts of them across multiple projects. In this post, we will explore the concept of Jenkins Shared Libraries - a mechanism that allows keeping bits of our pipeline scripts within reusable units.","author":{"@type":"Person","name":"Michał Krzyżanowski"},"@type":"BlogPosting","url":"https://automatingguy.com/2017/12/29/jenkins-pipelines-shared-libraries/","image":"https://automatingguy.com/public/img/social/image-og.jpg","publisher":null,"headline":"Exploring Jenkins Pipelines: Shared Libraries","dateModified":"2017-12-29T00:00:00+00:00","datePublished":"2017-12-29T00:00:00+00:00","sameAs":null,"mainEntityOfPage":{"@type":"WebPage","@id":"https://automatingguy.com/2017/12/29/jenkins-pipelines-shared-libraries/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://automatingguy.com"><img src="https://automatingguy.com/public/img/logo.png" alt="Logo of the website"></a>
+      <p>Test automation, QA, Dev/TestOps <br>- by Michał Krzyżanowski</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="https://automatingguy.com">Blog</a>
+      <a class="sidebar-nav-item" href="https://automatingguy.com/tags/">Tags</a>
+      <a class="sidebar-nav-item" href="https://automatingguy.com/contact/">Contact</a>
+      <a class="sidebar-nav-item" href="https://automatingguy.com/about/">About</a>
+
+      <div class="sidebar-social">
+        <a class="sidebar-social-icon" href="https://www.facebook.com/AutomatingGuy/" aria-label="Link to site's Facebook profile"><i class="fab fa-facebook-square fa-2x" aria-hidden="true"></i></a>
+        <a class="sidebar-social-icon" href="https://twitter.com/automatingguy" aria-label="Link to author's Twitter"><i class="fab fa-twitter-square fa-2x" aria-hidden="true"></i></a>
+        <a class="sidebar-social-icon" href="https://github.com/mkrzyzanowski" aria-label="Link to author's Github"><i class="fab fa-github-square fa-2x" aria-hidden="true"></i></a>
+        <a class="sidebar-social-icon" href="https://www.linkedin.com/in/m-krzyzanowski" aria-label="Link to author's LinkedIn"><i class="fab fa-linkedin fa-2x" aria-hidden="true"></i></a>
+      </div>
+    </nav>
+
+    <div class="newsletter">
+      <hr/>
+      Subscribe to the newsletter
+      <script async id="_ck_331919" src="https://forms.convertkit.com/331919?v=6"></script>
+    </div>
+
+    <div class="copyright">
+      <p>&copy; 2018 Automating Guy | Theme: <a href="https://github.com/poole/hyde">Poole</a></p>
+    </div>
+  </div>
+</div>
+
+
+    <div class="content container">
+      
+
+
+
+<div class="post">
+  <h1 class="post-title">Exploring Jenkins Pipelines: Shared Libraries</h1>
+  <div class="post-meta">
+    <span class="post-date">29 Dec 2017</span>
+    
+    <span class="reading-time" title="Estimated read time">
+  <i class="fas fa-clock" aria-hidden="true"></i>
+  
+  
+    16 mins
+  
+</span>
+    
+    <span class="post-tags"> <span class="fas fa-tags"></span> <a href="https://automatingguy.com/tag/jenkins/">Jenkins</a>, <a href="https://automatingguy.com/tag/continuous-delivery/">Continuous Delivery</a></span>
+  </div>
+  <p>Continuing the mini-series about Jenkins Pipelines, it is time to take a closer look at how our pipelines can follow the DRY (Don’t Repeat Yourself) principle when our scripts are getting bigger and bigger, and we need to share parts of them across multiple projects. In this post, we will explore the concept of Jenkins Shared Libraries - a mechanism that allows keeping bits of our pipeline scripts within reusable units.</p>
+
+<!--more-->
+<div class="message">
+    Examples from this post will be based on the code from the other articles in this mini-series. If you haven't had the chance, it might be a good idea to check them out first:
+    <ul>
+        <li><a href="https://automatingguy.com/2017/10/13/selenium-tests-with-jenkins-and-zalenium/">Running Selenium tests with Jenkins Pipelines and Zalenium</a></li>
+        <li><a href="https://automatingguy.com/2017/11/06/jenkins-pipelines-simple-delivery-flow/">Exploring Jenkins Pipelines: a simple delivery flow</a></li>
+    </ul>
+</div>
+
+<h2 id="general-information">General information</h2>
+
+<p>First, let’s take a closer look at the whole idea behind Jenkins Shared Libraries. The official documentation can be found <a href="https://jenkins.io/doc/book/pipeline/shared-libraries/">here</a>. It thoroughly describes the general concept, but some details may not be so apparent when trying to pull pieces of your script code into a library.</p>
+
+<h3 id="library-structure-and-contents">Library structure and contents</h3>
+
+<p>Taking a look at the directory structure, it maps to the three types of elements of a library:</p>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">/vars</code> - over here global variables and functions are kept - this will be your bread and butter for creating your own custom DSLs inside your scripts.</p>
+
+    <p>After a successful run of a pipeline using a library containing such elements, they will be listed under <code class="highlighter-rouge">&lt;jenkins-url&gt;/pipeline-syntax/globals</code> page and, when a corresponding <code class="highlighter-rouge">.txt</code> file is inside the library, present additional documentation from it - this way you can provide extra help to other team members using your API.</p>
+  </li>
+  <li><code class="highlighter-rouge">/src</code> - a regular Java source directory; everything kept here will be added to the classpath during script compilation; the available classes can be loaded with an import statement;</li>
+  <li><code class="highlighter-rouge">/resources</code> - additional non-Groovy/Java files that can be loaded via <code class="highlighter-rouge">libraryResource</code> step</li>
+</ul>
+
+<p>The order I’ve put the above folders is not random - I’ve based it on the frequency I have been using them when working with Pipelines. That’s me - maybe your use case will be different :). I have noticed though that in general, managing steps via global methods in <code class="highlighter-rouge">vars</code> folder is more straightforward - you can use freely other steps, while the code from <code class="highlighter-rouge">src</code> requires passing the <code class="highlighter-rouge">steps</code> object from the pipeline itself.</p>
+
+<p>What’s noteworthy is that all scripts are put through CPS (continuation-passing style) transformation - the magic that enables pipelines to survive a restart and occasionally make you pull your hair off due to the related errors :).</p>
+
+<h3 id="ways-of-loading-libraries-into-your-scripts">Ways of loading libraries into your scripts</h3>
+
+<p>We configure the Shared Libraries on Jenkins’ main configuration page - we need to provide a name and SCM details to have a way to refer to our library from the script.</p>
+
+<p>The most important part here is also mentioned in the official doc: such libraries are considered <strong>‘trusted’</strong>. There might be a chance that if you developed pipelines you’d run into problems when calling internal Jenkins or Java/Groovy APIs, where Jenkins failed the pipeline saying something about the sandbox, rejection, lack of permissions, etc. This is because pipelines scripts kept, e.g., directly in the job (which is one of the ways to debug parts of your pipelines) are run in a Groovy sandbox that is the cause of all these ‘pleasures’. Using Global Libraries solves that problem but bear in mind (if you missed this info in the docs) <strong>people with push permissions to the repository containing the Global Library have basically unlimited access to Jenkins</strong>. You have been warned, and hopefully, this is not a reason for your InfoSec team to ban Pipelines or libraries from being used.</p>
+
+<p>One additional thing when it comes to a Library configuration - you can select the checkbox which loads it implicitly, meaning you do not have to worry about remembering about loading it manually. If you have some libraries that are must-haves in your pipelines that may be an excellent improvement to your workflow.</p>
+
+<p>Since libraries are yet another bunch of code, you might want to version them by tagging the repository or keeping different branches active - you can specify the default revision in the configuration (which probably is a good idea when combined with implicit loading).</p>
+
+<p>If like me, you prefer to control the whole pipeline from the code, you can load the library using <code class="highlighter-rouge">@Library</code> annotation. It can be put above one of your import statements or (in case you are using only global variables/functions) with an underscore: <code class="highlighter-rouge">@Library('your-lib') _</code>.</p>
+
+<p>There is an additional step that loads a library dynamically during the runtime: <code class="highlighter-rouge">library 'your-lib'</code>. Keep in mind though, that with this approach all your library classes have to be accessed via a different method: <code class="highlighter-rouge">library('your-lib').com.company.SomeUtil.method()</code>. I haven’t found a use case for such approach yet, so let me know when you needed to load a library like that!</p>
+
+<h2 id="refactoring-time">Refactoring time!</h2>
+
+<p>Now that we know the basics, it is time to apply them to an actual script! Let’s analyze the pipelines that we created in <a href="index.html">previous</a> <a href="https://automatingguy.com/2017/11/06/jenkins-pipelines-simple-delivery-flow/">posts</a> - they should give us at least couple points that we could refactor. Here are the pipelines:</p>
+
+<script src="https://gist.github.com/6b1b185356a92bdc76ac825a6fc26d4e.js"> </script>
+
+<script src="https://gist.github.com/f25c90074a361fcb26a231a356826ae2.js"> </script>
+
+<h3 id="creating-a-library">Creating a library</h3>
+
+<p>As I mentioned before, a library is merely a code repository with a specific folder structure so first let’s create a simple Git repository. Now, what shall we put inside?</p>
+
+<h3 id="finding-candidates-for-a-library">Finding candidates for a library</h3>
+
+<p>When thinking about moving parts of your pipeline to a library, imagine creating a similar script in the next project or creating an additional pipeline that reuses bits of the one you already have. What can/should be extracted to make that possible or painless? Keep in mind that when scaling your delivery pipelines you probably want to introduce a change in a few places as possible.</p>
+
+<p>Now, let’s take a look at following elements in the above scripts, our potential candidates that we can delegate:</p>
+
+<ol>
+  <li>Methods defined inside the script: <code class="highlighter-rouge">dockerCmd</code> and <code class="highlighter-rouge">getReleasedVersion</code></li>
+  <li>The way we run tests</li>
+  <li>The release procedure</li>
+</ol>
+
+<h4 id="methods-defined-in-the-script">Methods defined in the script</h4>
+
+<p>The first on our list are the methods that we defined in our pipeline. They are usually the most obvious candidates to be moved to a library - it is a piece of logic that has been already extracted out of the main script body. Naturally, sometimes such methods will make sense only in the context of the given pipeline, where they will stay.</p>
+
+<p>Let’s focus on the <code class="highlighter-rouge">getReleasedVersion</code> method, as this one will be easier to handle:</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">def</span> <span class="nf">getReleasedVersion</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="o">(</span><span class="n">readFile</span><span class="o">(</span><span class="s1">'pom.xml'</span><span class="o">)</span> <span class="o">=~</span> <span class="s1">'&lt;version&gt;(.+)-SNAPSHOT&lt;/version&gt;'</span><span class="o">)[</span><span class="mi">0</span><span class="o">][</span><span class="mi">1</span><span class="o">]</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>It does not depend on any additional environmental variables, it just reads and processes a POM file. Assuming we leave navigating to it to the pipeline, we can basically almost copy-paste it into the library.</p>
+
+<p>To do so, we need to create a small Groovy script in our still empty repository. Since we would like to re-use the above as a regular step in the pipeline, we will put it inside <code class="highlighter-rouge">vars</code> folder and name the file just as our step will be invoked: <code class="highlighter-rouge">getReleasedVersion.groovy</code>. The contents will be a simple <code class="highlighter-rouge">call</code> function, without any parameters (for simplicity/laziness reasons :)):</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">def</span> <span class="nf">call</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">(</span><span class="n">readFile</span><span class="o">(</span><span class="s1">'pom.xml'</span><span class="o">)</span> <span class="o">=~</span> <span class="s1">'&lt;version&gt;(.+)-SNAPSHOT&lt;/version&gt;'</span><span class="o">)[</span><span class="mi">0</span><span class="o">][</span><span class="mi">1</span><span class="o">]</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>And that’s it, we have the first step in our shared library! On to the next one then.</p>
+
+<p>The <code class="highlighter-rouge">dockerCmd</code> is a more tricky case. The definition might not be, but let’s see how it is being invoked:</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//...</span>
+  <span class="kt">def</span> <span class="n">dockerTool</span> <span class="o">=</span> <span class="n">tool</span> <span class="nl">name:</span> <span class="s1">'docker'</span><span class="o">,</span> <span class="nl">type:</span> <span class="s1">'org.jenkinsci.plugins.docker.commons.tools.DockerTool'</span>
+  <span class="n">withEnv</span><span class="o">([</span><span class="s2">"DOCKER=${dockerTool}/bin"</span><span class="o">])</span> <span class="o">{</span>
+    <span class="c1">//...</span>
+  <span class="o">}</span>
+<span class="c1">//...</span>
+<span class="kt">def</span> <span class="nf">dockerCmd</span><span class="o">(</span><span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">sh</span> <span class="s2">"sudo ${DOCKER}/docker ${args}"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">dockerCmd</code> depends on the environment variable <code class="highlighter-rouge">DOCKER</code>, which on the other hand requires a Jenkins tool properly configured. We could simply move the function as is, perhaps with an additional safeguard throwing an exception when such variable is missing but imagine using such step in another pipeline. You probably would copy-paste these two lines (who would remember in what package lies the type of the tool?). This is not the most user-friendly approach, right? But perhaps we could wrap them in a single handy call, like… <code class="highlighter-rouge">withDocker</code>?</p>
+
+<div class="message">
+    Note here: be careful how you name your steps to avoid conflicts with in-built or plugin-provided steps. It is always a good idea to peek at the list available at JENKINS_URL/pipeline-syntax, just to be sure.
+</div>
+
+<p>Let’s create two additional global steps in our library:</p>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">withDocker.groovy</code>:</p>
+
+    <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kt">def</span> <span class="nf">call</span><span class="o">(</span><span class="n">Closure</span> <span class="n">body</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kt">def</span> <span class="n">dockerTool</span> <span class="o">=</span> <span class="n">tool</span> <span class="nl">name:</span> <span class="s1">'docker'</span><span class="o">,</span> <span class="nl">type:</span> <span class="s1">'org.jenkinsci.plugins.docker.commons.tools.DockerTool'</span>
+      <span class="n">withEnv</span><span class="o">([</span><span class="s2">"DOCKER=${dockerTool}/bin"</span><span class="o">])</span> <span class="o">{</span>
+          <span class="n">body</span><span class="o">()</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">dockerCmd.groovy</code>:</p>
+
+    <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kt">def</span> <span class="nf">call</span><span class="o">(</span><span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">assert</span> <span class="n">DOCKER</span> <span class="o">!=</span> <span class="kc">null</span>
+      <span class="k">assert</span> <span class="n">args</span> <span class="o">!=</span> <span class="kc">null</span>
+      <span class="k">return</span> <span class="nf">sh</span><span class="o">(</span><span class="nl">script:</span> <span class="s2">"sudo ${DOCKER}/docker ${args}"</span><span class="o">,</span> <span class="nl">returnStdout:</span> <span class="kc">true</span><span class="o">)</span>
+  <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>The additional return here might come in handy when we would like to use the returned information (e.g., container ID) somewhere further in the pipeline.</p>
+
+<p>Save, commit and we’re done. Having the above, we can now directly call, e.g.:</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">withDocker</span> <span class="o">{</span>
+    <span class="c1">//...</span>
+    <span class="n">dockerCmd</span> <span class="s1">'run -d -p 9999:9999 --name "snapshot" --network="host" automatingguy/sparktodo:SNAPSHOT'</span>
+    <span class="c1">//...</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="the-way-we-run-tests">The way we run tests</h4>
+
+<p>The next element on our list is how we run specific tests in our pipelines. Usually, in your team or organization, you will have to execute the tests the same way multiple times - there are various environments, different groups reuse the same test automation frameworks, etc. Such executions are perfect bits that can end up in a library.</p>
+
+<p>In our pipelines, we have executions of two frameworks, Rest Assured and Bobcat:</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="o">{</span>
+    <span class="n">dir</span><span class="o">(</span><span class="s1">'tests/rest-assured'</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">sh</span> <span class="s1">'./gradlew clean test'</span>
+    <span class="o">}</span>
+<span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+    <span class="n">junit</span> <span class="nl">testResults:</span> <span class="s1">'tests/rest-assured/build/*.xml'</span><span class="o">,</span> <span class="nl">allowEmptyResults:</span> <span class="kc">true</span>
+    <span class="n">archiveArtifacts</span> <span class="s1">'tests/rest-assured/build/**'</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="o">{</span>
+    <span class="n">withMaven</span><span class="o">(</span><span class="nl">maven:</span> <span class="s1">'Maven 3'</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">dir</span><span class="o">(</span><span class="s1">'tests/bobcat'</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">sh</span> <span class="s1">'mvn clean test -Dmaven.test.failure.ignore=true'</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+    <span class="n">junit</span> <span class="nl">testResults:</span> <span class="s1">'tests/bobcat/target/*.xml'</span><span class="o">,</span> <span class="nl">allowEmptyResults:</span> <span class="kc">true</span>
+    <span class="n">archiveArtifacts</span> <span class="s1">'tests/bobcat/target/**'</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Let’s assume that we will execute them using Gradle and Maven respectively.</p>
+
+<p>Taking a look at the above code snippets in the context of extracting them to an external function, parametrizing the paths used in them is probably a good idea. We will leave the  <code class="highlighter-rouge">dir</code> steps out of the library though - in my opinion, it is the responsibility of given pipeline to know the context of a given stage and navigate correctly through its workspace.</p>
+
+<p>Just like with any other library that we would implement when creating steps for Jenkins, it is always a good idea to stop for a second and think about possible and relatively cheap extension points. What could be a bit different use case of the step we are trying to introduce? What modifications our user might need in the future? How would we like to adjust triggering the above code?</p>
+
+<p>In general, the most common case when it comes to executing Maven/Gradle or other build system are the parameters we provide. Let’s try to include a capability that allows that in our steps.</p>
+
+<p>Keeping in mind all the above, we can create two new scripts (same as before, in <code class="highlighter-rouge">vars</code> folder):</p>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">restAssured.groovy</code></p>
+
+    <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kt">def</span> <span class="nf">call</span><span class="o">(</span><span class="n">Map</span> <span class="n">config</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">try</span> <span class="o">{</span>
+          <span class="n">sh</span> <span class="s2">"./gradlew test ${config?.params ?: ''}"</span>
+      <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+          <span class="kt">def</span> <span class="n">path</span> <span class="o">=</span> <span class="n">config</span><span class="o">?.</span><span class="na">artifactsPath</span><span class="o">?.</span><span class="na">concat</span><span class="o">(</span><span class="s1">'/'</span><span class="o">)</span> <span class="o">?:</span> <span class="s1">''</span>
+          <span class="n">junit</span> <span class="nl">testResults:</span> <span class="s2">"${path}build/*.xml"</span><span class="o">,</span> <span class="nl">allowEmptyResults:</span> <span class="kc">true</span>
+          <span class="n">archiveArtifacts</span> <span class="s2">"${path}build/**"</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></div>    </div>
+
+    <p>We are using here a bit different construction for passing parameters. Thanks to the above syntax, we can invoke the new step in a following, more understandable way: <code class="highlighter-rouge">restAssured params: '-Psuite=MyTests' artifactsPath: '/some/directory'</code>.</p>
+
+    <p>Additionally, note one more significant thing: I have removed the <code class="highlighter-rouge">clean</code> task. I did it so this step can be safely used in <code class="highlighter-rouge">parallel</code> blocks - otherwise, such executions would wipe results from the other runs.</p>
+
+    <p>Oh, and remember about swapping single quotes for double ones to make string interpolation possible.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">bobcat.groovy</code></p>
+
+    <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kt">def</span> <span class="nf">call</span><span class="o">(</span><span class="n">Map</span> <span class="n">config</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">try</span> <span class="o">{</span>
+          <span class="n">sh</span> <span class="s2">"mvn clean test -Dmaven.test.failure.ignore=true ${config?.params ?: ''}"</span>
+      <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+          <span class="kt">def</span> <span class="n">path</span> <span class="o">=</span> <span class="n">config</span><span class="o">?.</span><span class="na">artifactsPath</span><span class="o">?.</span><span class="na">concat</span><span class="o">(</span><span class="s1">'/'</span><span class="o">)</span> <span class="o">?:</span> <span class="s1">''</span>
+          <span class="n">junit</span> <span class="nl">testResults:</span> <span class="s2">"${path}target/*.xml"</span><span class="o">,</span> <span class="nl">allowEmptyResults:</span> <span class="kc">true</span>
+          <span class="n">archiveArtifacts</span> <span class="s2">"${path}target/**"</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></div>    </div>
+
+    <p>We applied the same rules here, with the exact two parameters, which adds a nice consistency in our library.</p>
+  </li>
+</ul>
+
+<p>Looking at the above code snippets we can clearly see that they are very similar - the <code class="highlighter-rouge">try-finally</code>, <code class="highlighter-rouge">junit</code> and <code class="highlighter-rouge">archiveArtifacts</code> steps. We could refactor both scripts even further and extract an additional wrapping step, named, e.g. <code class="highlighter-rouge">testWithJunit</code>, to make life easier for another framework - I’ll leave that exercise to you though :).</p>
+
+<h4 id="the-release-procedure">The release procedure</h4>
+
+<p>Time for the last part - the release procedure. Let’s analyze it (and imagine that this is a regular way of making releases in our team/organization, so putting this in the library is justified):</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">withMaven</span><span class="o">(</span><span class="nl">maven:</span> <span class="s1">'Maven 3'</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">dir</span><span class="o">(</span><span class="s1">'app'</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">releasedVersion</span> <span class="o">=</span> <span class="n">getReleasedVersion</span><span class="o">()</span>
+            <span class="n">withCredentials</span><span class="o">([</span><span class="n">usernamePassword</span><span class="o">(</span><span class="nl">credentialsId:</span> <span class="s1">'github'</span><span class="o">,</span> <span class="nl">passwordVariable:</span> <span class="s1">'password'</span><span class="o">,</span> <span class="nl">usernameVariable:</span> <span class="s1">'username'</span><span class="o">)])</span> <span class="o">{</span>
+                <span class="n">sh</span> <span class="s2">"git config user.email <a href="https://automatingguy.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7d09180e093d1c080912101c0914131a1a0804531e1210">[email&#160;protected]</a> &amp;&amp; git config user.name Jenkins"</span>
+                <span class="n">sh</span> <span class="s2">"mvn release:prepare release:perform -Dusername=${username} -Dpassword=${password}"</span>
+            <span class="o">}</span>
+            <span class="n">dockerCmd</span> <span class="s2">"build --tag automatingguy/sparktodo:${releasedVersion} ."</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>At this point, you probably already noticed what and how we are going to extract :). Time to create <code class="highlighter-rouge">release.groovy</code> in <code class="highlighter-rouge">vars</code> folder!</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">def</span> <span class="nf">call</span><span class="o">(</span><span class="n">Map</span> <span class="n">config</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">withCredentials</span><span class="o">([</span><span class="n">usernamePassword</span><span class="o">(</span><span class="nl">credentialsId:</span> <span class="n">config</span><span class="o">.</span><span class="na">credentials</span><span class="o">,</span> <span class="nl">passwordVariable:</span> <span class="s1">'password'</span><span class="o">,</span> <span class="nl">usernameVariable:</span> <span class="s1">'username'</span><span class="o">)])</span> <span class="o">{</span>
+        <span class="n">sh</span> <span class="s2">"git config user.email ${config?.email ?: '<a href="https://automatingguy.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3d5758535654534e7d58455c504d5158135e5250">[email&#160;protected]</a>'} &amp;&amp; git config user.name ${config?.username ?: 'Jenkins'}"</span>
+        <span class="n">sh</span> <span class="s2">"mvn release:prepare release:perform -Dusername=${username} -Dpassword=${password}"</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="setting-up-the-library-in-jenkins">Setting up the library in Jenkins</h3>
+
+<p>To actually use the library, we need to configure it first. Navigate to the Jenkins configuration page (<code class="highlighter-rouge">/configure</code>) and in the ‘Global Pipeline Libraries’ hit the ‘Add’ button. Now, provide a name that can be used to import it later on and, after selecting the ‘Modern SCM’ option, information about your library repository:</p>
+
+<p><a href="https://automatingguy.com/public/img/posts/004/library-configuration.jpg" target="_blank" rel="noopener noreferrer">
+  <img src="https://automatingguy.com/public/img/posts/004/library-configuration-thumb.jpg" alt="View of the pipeline configuration on Jenkins configuration page" />
+</a></p>
+
+<p>After this, we are all set!</p>
+
+<h3 id="using-a-library-in-your-script">Using a library in your script</h3>
+
+<p>Now that the hard part is finished, it is time to clean up our pipelines. We are going to replace parts of the script with corresponding library methods and add the necessary imports.</p>
+
+<p>After the refactoring our pipelines look as follows:</p>
+
+<script data-cfasync="false" src="https://automatingguy.com/cdn-cgi/scripts/d07b1474/cloudflare-static/email-decode.min.js"></script><script src="https://gist.github.com/056df9df91d63c45a73e8d7e1a7f7589.js"> </script>
+
+<script src="https://gist.github.com/8d8eb670ef56f57ea7305eba382abd85.js"> </script>
+
+<p>Looking at the code above, we made it a bit more concise and easier to read. We could probably refactor it further and, e.g., name specific Docker commands. Always stop for a second and think though - is it really worth moving <em>everything</em> to a library?</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>I hope that I showed you that extracting the most common tasks and sub-processes from your Jenkinsfiles into a library is straightforward and will speed up the development of your next pipelines, at the same time giving only a single point of modification (not of failure, hopefully :)). Creating your own DSL will bring consistency and allow you to avoid reinventing the wheel each time a team starts their journey with pipelines.</p>
+
+<p>Give it a try, play around with the library and do not get discouraged if you see stacktraces all over the place. Jenkins is not really verbose when it comes to errors (I encountered <a href="https://issues.jenkins-ci.org/browse/JENKINS-40109">this beauty</a> when working on the script here - the reason? a small typo, of course).</p>
+
+<p>As usual, all the code is available at GitHub:</p>
+<ul>
+  <li>the library itself: <a href="https://github.com/mkrzyzanowski/simple-jenkins-pipeline-library">link</a></li>
+  <li>repository from <a href="https://automatingguy.com/2017/11/06/jenkins-pipelines-simple-delivery-flow/">previous post</a> in the series with an updated <code class="highlighter-rouge">Jenkinsfile</code>: <a href="https://github.com/mkrzyzanowski/blog-003">link</a></li>
+</ul>
+
+<p>Until the next time - feel free to contact me in case of any questions/comments!</p>
+
+</div>
+
+<div class="newsletter-post">
+    <script async id="_ck_331635" src="https://forms.convertkit.com/331635?v=6"></script>
+</div>
+
+<div class="related">
+  <h2>Other Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="https://automatingguy.com/2018/02/27/testfest-2018-summary/">
+            test:fest 2018 summary
+            <small>27 Feb 2018</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="https://automatingguy.com/2018/02/11/deciding-on-test-automation-toolset/">
+            Deciding on the test automation toolset
+            <small>11 Feb 2018</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="https://automatingguy.com/2017/11/22/testwarez-2017-summary/">
+            TestWarez 2017 summary
+            <small>22 Nov 2017</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+
+<section class="comments">
+        
+      
+  
+      
+<div id="respond">
+  <h2 class="section-title">Leave a Comment</h2>
+  <div class="comment-reply-cancel"><a rel="nofollow" id="cancel-comment-reply-link" href="index.html#respond" class="hidden">Cancel reply to </a></div>
+  <form id="comment-form" class="general-form js-form" method="post" action="https://api.staticman.net/v2/entry/mkrzyzanowski/mkrzyzanowski.github.io/master/comments">
+    <div>
+      <label for="comment-form-message">Comment (<a href="https://daringfireball.net/projects/markdown/syntax">Markdown</a> is allowed)</label>
+      <textarea type="text" rows="6" id="comment-form-message" name="fields[message]" spellcheck="true" required tabindex="1"></textarea>
+    </div>
+    <div>
+      <label for="comment-form-name">Name</span></label>
+      <input type="text" id="comment-form-name" name="fields[name]" spellcheck="false" required tabindex="2"/>
+    </div>
+    <div>
+      <label for="comment-form-email">Email (will not be published, used for <a href="https://en.gravatar.com/">Gravatar</a> image and reply notifications)</label>
+      <input type="email" id="comment-form-email" name="fields[email]" spellcheck="false" required tabindex="3"/>
+    </div>
+    <div class="hidden" style="display:none;">
+      <input type="hidden" id="comment-replying-to" name="fields[replying_to]" value=""> 
+      <input type="hidden" id="comment-post-id" name="options[slug]" value="jenkins-pipelines-shared-libraries">
+      <input type="hidden" name="options[origin]" value="https://automatingguy.com/2017/12/29/jenkins-pipelines-shared-libraries/">
+      <input type="hidden" name="options[parent]" value="https://automatingguy.com/2017/12/29/jenkins-pipelines-shared-libraries/">
+      <label for="comment-form-location">Leave blank if you are a human</label>
+      <input type="text" id="comment-form-location" name="fields[hidden]" autocomplete="off" tabindex="-1"/>
+    </div>
+    <div>
+      <label for="comment-form-reply">
+        <input type="checkbox" id="comment-form-reply" name="options[subscribe]" value="email" tabindex="4">
+        Let me know about new comments by email.
+      </label>
+      <div id='recaptcha' class="g-recaptcha" data-sitekey="6LcfTTIUAAAAAB-6rgzIg4p62P8kbtiLElVF7dQY" data-callback="captchaComplete" data-size="invisible" data-badge="inline"></div>
+      <button type="submit" id="comment-form-submit" tabindex="5">Comment</button>
+    </div>
+    <!-- Start comment form alert messaging -->
+    <div class="hidden js-notice">
+      <span class="js-notice-icon fas fa-3x"></span>
+      <span class="js-notice-text"></span>
+    </div>
+    <!-- End comment form alert messaging -->
+  </form>
+</div>
+
+    
+  </section>
+
+
+    </div>
+
+  
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://automatingguy.com/public/js/main.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>    
+  
+  </body>
+</html>
