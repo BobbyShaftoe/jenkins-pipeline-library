@@ -1,4 +1,4 @@
-#!/usr/bin/groovy
+package org.aws;
 
 def call() {
   az = sh(returnStdout: true, script: 'curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone').trim()
