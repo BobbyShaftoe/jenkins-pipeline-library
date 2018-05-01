@@ -11,7 +11,7 @@ def call(body) {
 
   try {
    stage('Checkout main repository') {
-    buildInfo('Run the env script')
+    buildInfo('Checkout main repository')
     git poll: false, url: 'https://github.com/BobbyShaftoe/pipeline-job-aa.git'
    }
 
