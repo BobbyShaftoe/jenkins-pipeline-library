@@ -13,7 +13,8 @@ def call(body) {
       try {
        stage('Checkout main repository') {
         buildInfo('Checkout main repository')
-        git poll: false, url: 'https://github.com/BobbyShaftoe/pipeline-job-aa.git'
+        //git poll: false, url: 'https://github.com/BobbyShaftoe/pipeline-job-aa.git'
+        sh 'echo "not checking out here"'
        }
 
        stage('List files in workspace') {
