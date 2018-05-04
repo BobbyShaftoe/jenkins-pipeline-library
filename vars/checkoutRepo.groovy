@@ -13,5 +13,5 @@ def call(body) {
       }
 
   }
-  return checkoutVars
+  //return checkoutVars
 }
