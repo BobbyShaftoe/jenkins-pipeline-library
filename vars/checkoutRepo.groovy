@@ -4,7 +4,7 @@ def call(String repo) {
     ansiColor('xterm') {
 
       try {
-       stage('Checkout main repository') {
+       stage('Checkout repository') {
         buildInfo('Checkout main repository')
           git poll: false, url: repo
        }
