@@ -8,7 +8,7 @@ def call(body) {
   node('aws-node-00') {
     ansiColor('xterm') {
       // Clean workspace before doing anything
-      deleteDir()
+      //deleteDir()
 
       try {
        stage('Checkout main repository') {
