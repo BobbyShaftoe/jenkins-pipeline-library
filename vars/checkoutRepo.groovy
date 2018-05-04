@@ -1,17 +1,18 @@
-
-def call(body) {
-  def config = [:]
-  body.resolveStrategy = Closure.DELEGATE_FIRST
-  body.delegate = config
-  body()
+def call(String repo) {
 
   node('aws-node-00') {
-      stage('Checkout') {
-          def checkoutVars = checkout scm
-          echo checkoutVars
+    ansiColor('xterm') {
 
+      try {
+       stage('Checkout main repository') {
+        buildInfo('Checkout main repository')
+          git poll: false, url: repo
+       }
+
+      } catch (err) {
+         currentBuild.result = 'FAILED'
+         throw err
       }
-
+    }
   }
-  //return checkoutVars
 }

@@ -1,6 +1,5 @@
 
 
-
 def call(String stagename = '') {
   infoSharedLib = 'jenkins-pipeline-library'
 
