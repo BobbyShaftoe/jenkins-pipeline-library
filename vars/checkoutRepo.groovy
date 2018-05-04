@@ -1,5 +1,5 @@
 
-def call(String repo) {
+def call() {
 
   def checkoutVars = checkout scm
   echo checkoutVars
