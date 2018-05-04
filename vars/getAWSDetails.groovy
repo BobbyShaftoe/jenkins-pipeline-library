@@ -3,5 +3,5 @@ def call() {
   region = az.replaceFirst(/[a-z]$/, "")
   account = sh(returnStdout: true, script: 'curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | grep -oP \'(?<="accountId" : ")[^"]*(?=")\'').trim()
 
-  return ["region": region, "account": account]
+  return ["az": az, "region": region, "account": account]
 }
