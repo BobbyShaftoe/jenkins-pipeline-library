@@ -12,23 +12,23 @@ def call(body) {
       try {
 
         stage('List files in workspace') {
-          buildInfo('List files in workspace')
+          buildInfo()
           sh 'ls -larst .'
           sh 'ls -la */*'
        }
 
         stage('Environment') {
-          buildInfo('Environment')
+          buildInfo()
           sh 'scripts/env.sh'
 
          }
         stage('Read placeholder') {
-          buildInfo('Read placeholder')
+          buildInfo()
           readFile 'lib/placeholder.txt'
          }
 
         stage('Archive workspace') {
-           buildInfo('Archive workspace')
+           buildInfo()
            archiveArtifacts '**/*.*'
          }
 

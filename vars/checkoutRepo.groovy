@@ -6,7 +6,7 @@ def call(String repo) {
       try {
         dir('.') {
           stage('Checkout repository') {
-            buildInfo("Checkout repository: $repo")
+            buildInfo("$repo")
             git poll: false, url: repo
           }
         }
