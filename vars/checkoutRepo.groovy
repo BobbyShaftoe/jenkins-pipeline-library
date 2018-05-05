@@ -4,10 +4,12 @@ def call(String repo) {
     ansiColor('xterm') {
 
       try {
-       stage('Checkout repository') {
-        buildInfo('Checkout main repository')
-          git poll: false, url: repo
-       }
+        dir('project1') {
+          stage('Checkout repository') {
+            buildInfo('Checkout main repository')
+            git poll: false, url: repo
+          }
+        }
 
       } catch (err) {
          currentBuild.result = 'FAILED'
