@@ -6,6 +6,6 @@ def call(String stagename = '') {
   infoBuildNumber = env.BUILD_NUMBER
   infoJobName = env.JOB_NAME
   env.SHARED_LIB = infoSharedLib
-  echo "\u001B[32m[Pipeline] Stage ('$stagename') SharedLib: $infoSharedLib\u001B[0m"
+  echo "[Pipeline] \u001B[32mStage('$stagename')\u001B[0m SharedLib: \u001B[35m$infoSharedLib\u001B[0m"
 }
 
