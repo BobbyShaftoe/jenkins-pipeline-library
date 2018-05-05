@@ -4,8 +4,9 @@ def call(body) {
   body.resolveStrategy = Closure.DELEGATE_FIRST
   body.delegate = config
   body()
+  def node = 'aws-node-00'
 
-  node('aws-node-00') {
+  node(node) {
     ansiColor('xterm') {
 
       try {
