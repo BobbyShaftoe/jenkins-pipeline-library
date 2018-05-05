@@ -9,9 +9,9 @@ def call(String messageString = '') {
   env.SHARED_LIB = infoSharedLib
 
   if(messageString != '') {
-    messageString = '\"' + messageString + '\"'
+    messageString = '\"' + messageString + '\" '
   }
 
-  echo "[Pipeline] \u001B[31mStage('$stagename')\u001B[0m $messageString \u001B[35mSharedLib: \"$infoSharedLib\u001B[0m\""
+  echo "[Pipeline] \u001B[31mStage('$stagename')\u001B[0m $messageString\u001B[35m\"$infoSharedLib\u001B[0m\""
 }
 
