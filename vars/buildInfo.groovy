@@ -12,6 +12,6 @@ def call(String messageString = '') {
     messageString = '\"' + messageString + '\" '
   }
 
-  echo "[Pipeline] \u001B[31mStage('$stagename')\u001B[0m $messageString\u001B[35m\"$infoSharedLib\u001B[0m\""
+  echo "\u001B[31mStage('$stagename')\u001B[0m $messageString\u001B[35m\"$infoSharedLib\u001B[0m\""
 }
 
