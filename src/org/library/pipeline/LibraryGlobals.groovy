@@ -1,7 +1,7 @@
 package org.library.pipeline;
 
-def sharedLibName = 'jenkins-pipeline-library'
-def sharedLibVersion = '0.1'
+public def sharedLibName = 'jenkins-pipeline-library'
+public def sharedLibVersion = '0.1'
 
 //class LibraryGlobals {
 
