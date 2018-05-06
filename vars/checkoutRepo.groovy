@@ -10,7 +10,8 @@ def call(String repo) {
       try {
         dir('.') {
           stage('Create repository directory'){
-            sh 'mkdir -p $repoName'
+            echo repoName
+            sh 'mkdir $repoName'
             sh 'echo > $repoName/test.txt'
           }
         }
