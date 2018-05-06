@@ -17,7 +17,7 @@ def call(String repo) {
                     }
                 }
 
-                dir('.') {
+                dir("$repoName") {
                     stage('Checkout repository') {
                         buildInfo("$repo")
                         git poll: false, url: repo
