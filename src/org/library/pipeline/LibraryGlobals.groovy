@@ -1,7 +1,5 @@
 package org.library.pipeline;
 
-
-
 class LibraryGlobalsVars implements Serializable {
 
     def sharedLibName = 'jenkins-pipeline-library'
