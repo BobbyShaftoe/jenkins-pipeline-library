@@ -1,5 +1,5 @@
 
-import org.library.pipeline.*
+import org.library.pipeline.LibraryGlobals
 
 def call(String messageString = '') {
 
