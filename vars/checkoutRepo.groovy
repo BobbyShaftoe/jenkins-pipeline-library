@@ -8,7 +8,7 @@ def call(String repo) {
       try {
         dir('.') {
           stage('Create repository directory'){
-            sh "mkdir -p $repoName"
+            sh "mkdir -p ${repoName}"
           }
         }
         dir($repoName) {
