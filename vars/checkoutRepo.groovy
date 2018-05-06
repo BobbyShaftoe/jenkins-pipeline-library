@@ -1,4 +1,6 @@
-def call(node, repo) {
+def call(String repo) {
+
+  nodeName = env.JOB_NODE_NAME
 
   node("$node") {
     ansiColor('xterm') {
