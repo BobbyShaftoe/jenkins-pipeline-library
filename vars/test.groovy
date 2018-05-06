@@ -8,7 +8,12 @@ repoName = repo.replaceAll('.*/(.*)\\.git', '\$1')
 
 println repoName
 
-sh "echo $repoName"
+def sharedLibName = 'jenkins-pipeline-library'
+def sharedLibVersion = '0.1'
+
+
+printf("Shared library info:\n\tName: %s\n\tVersion: %s\n", sharedLibName, sharedLibVersion)
+
 
 // Placeholder
 //withEnv(['JRE_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.161-0.b14.amzn2.x86_64/jre']) {
