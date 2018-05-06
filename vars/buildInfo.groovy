@@ -3,7 +3,7 @@ import org.library.pipeline.*
 
 def call(String messageString = '') {
 
-    s = new org.library.pipeline.globalVars();
+    s = new org.library.pipeline.LibraryGlobals();
 
     infoSharedLib = s.sharedLibName
     //infoSharedLib = 'jenkins-pipeline-library'
