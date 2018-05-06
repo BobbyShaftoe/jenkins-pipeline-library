@@ -12,7 +12,7 @@ def call(String messageString = '') {
         messageString = '\"' + messageString + '\" '
     }
 
-    echo "\u001B[32mWorkspace: \"$env.WORKSPACE\u001B[0m\""
+    echo "\u001B[33mWorkspace: \"$env.WORKSPACE\u001B[0m\""
     echo "\u001B[31mStage('$stagename')\u001B[0m $messageString\u001B[35m\"$infoSharedLib\u001B[0m\""
 }
 
