@@ -1,7 +1,6 @@
 def call(node, repo) {
 
-
-  node('aws-node-00') {
+  node("$node") {
     ansiColor('xterm') {
 
       repoName = repo.replaceAll('.*/(.*)\\.git', '\$1')
