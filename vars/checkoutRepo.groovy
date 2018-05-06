@@ -1,4 +1,4 @@
-def call(String repo) {
+def call(node, repo) {
 
 
   node('aws-node-00') {
