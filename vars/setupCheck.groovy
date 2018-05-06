@@ -4,7 +4,8 @@ def call(body) {
     body.resolveStrategy = Closure.DELEGATE_FIRST
     body.delegate = config
     body()
-    def nodeName = 'aws-node-00'
+
+    nodeName = env.JOB_NODE_NAME
 
     node("$nodeName") {
         ansiColor('xterm') {
