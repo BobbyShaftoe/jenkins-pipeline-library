@@ -2,7 +2,7 @@ def call(String repo) {
 
     nodeName = env.JOB_NODE_NAME
 
-    node("$node") {
+    node("$nodeName") {
         ansiColor('xterm') {
 
             repoName = repo.replaceAll('.*/(.*)\\.git', '\$1')
