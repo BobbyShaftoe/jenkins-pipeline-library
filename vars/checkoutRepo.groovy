@@ -4,7 +4,7 @@ def call(String repo) {
   node('aws-node-00') {
     ansiColor('xterm') {
 
-      repoName = repo.replace('^.*/([a-zA-Z0-9_-]+).git', '\1')
+      repoName = repo.replaceAll('.*/(.*)\\.git', '\$1')
 
       try {
         dir('.') {
