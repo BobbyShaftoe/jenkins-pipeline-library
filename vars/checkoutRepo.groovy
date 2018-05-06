@@ -5,11 +5,13 @@ def call(String repo) {
     ansiColor('xterm') {
 
       repoName = repo.replaceAll('.*/(.*)\\.git', '\$1')
+      println repoName
 
       try {
         dir('.') {
           stage('Create repository directory'){
             sh 'mkdir -p $repoName'
+            sh 'echo > $repoName/test.txt'
           }
         }
         dir($repoName) {
