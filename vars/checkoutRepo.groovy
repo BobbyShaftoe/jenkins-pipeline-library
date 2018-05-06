@@ -14,7 +14,7 @@ def call(String repo) {
                         sh "mkdir -p $repoName"
                     }
                 }
-                dir($repoName) {
+                dir("$repoName") {
                     stage('Checkout repository') {
                         buildInfo("$repo")
                         git poll: false, url: repo
