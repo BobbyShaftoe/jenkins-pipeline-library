@@ -1,5 +1,5 @@
 
-//import org.library.pipeline.LibraryGlobalsVars
+import org.library.pipeline.*
 
 def call(String messageString = '') {
 
