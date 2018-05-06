@@ -1,11 +1,11 @@
 
-import org.library.pipeline.LibraryGlobals
+import org.library.pipeline.LibraryGlobalsVars
 
 def call(String messageString = '') {
 
-    def libinfo = new LibraryGlobals();
+    def libinfo = new LibraryGlobalsVars();
 
-    libname = libinfo.libName()
+    infoSharedLib  = libinfo.libName()
     //infoSharedLib = s.sharedLibName
     //infoSharedLib = 'jenkins-pipeline-library'
 
