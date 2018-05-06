@@ -5,7 +5,8 @@ def call(String messageString = '') {
 
     s = new org.library.pipeline.LibraryGlobals();
 
-    infoSharedLib = s.sharedLibName
+    infoSharedLib = sharedLibName
+    //infoSharedLib = s.sharedLibName
     //infoSharedLib = 'jenkins-pipeline-library'
 
     infoBuildNumber = env.BUILD_NUMBER
