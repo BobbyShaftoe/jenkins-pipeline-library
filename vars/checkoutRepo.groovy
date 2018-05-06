@@ -4,9 +4,11 @@ def call(String repo) {
     thisWorkSpace = env.THIS_WORKSPACE
 
     node("$nodeName") {
+
+        customWorkspace thisWorkSpace
+
         ansiColor('xterm') {
 
-            customWorkspace thisWorkSpace
             repoName = repo.replaceAll('.*/(.*)\\.git', '\$1')
 
             try {
