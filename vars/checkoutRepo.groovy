@@ -1,36 +1,36 @@
 def call(String repo) {
 
     nodeName = env.JOB_NODE_NAME
-    thisWorkSpace = env.THIS_WORKSPACE
 
     node("$nodeName") {
 
-        ws("$thisWorkSpace") {
+        ansiColor('xterm') {
 
-            ansiColor('xterm') {
+            repoName = repo.replaceAll('.*/(.*)\\.git', '\$1')
 
-                repoName = repo.replaceAll('.*/(.*)\\.git', '\$1')
+            try {
 
-                try {
-                    dir('.') {
-                        stage('Create repository directory') {
-                            buildInfo(repoName)
-                            sh "mkdir -p $repoName"
-                        }
+                dir('.') {
+                    stage('Create repository directory') {
+                        buildInfo(repoName)
+                        sh "mkdir -p $repoName"
                     }
-                    dir('.') {
-                        stage('Checkout repository') {
-                            buildInfo("$repo")
-                            git poll: false, url: repo
-                            //stash allowEmpty: true, name: 'server-bootstraps-ansible', useDefaultExcludes: false
-                        }
-                    }
-
-                } catch (err) {
-                    currentBuild.result = 'FAILED'
-                    throw err
                 }
+
+                dir('.') {
+                    stage('Checkout repository') {
+                        buildInfo("$repo")
+                        git poll: false, url: repo
+                        //stash allowEmpty: true, name: 'server-bootstraps-ansible', useDefaultExcludes: false
+                    }
+                }
+
+            } catch (err) {
+                currentBuild.result = 'FAILED'
+                throw err
             }
+
         }
+
     }
 }
