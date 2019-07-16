@@ -3,6 +3,7 @@ package org.pipeline
 
 env.sharedLibName = 'jenkins-pipeline-library'
 env.sharedLibVersion = '0.1'
+env.THIS_WORKSPACE = 'BUILD'
 
 //class LibraryGlobalsVars implements Serializable {
 //
