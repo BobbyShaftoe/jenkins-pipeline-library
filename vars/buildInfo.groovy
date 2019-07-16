@@ -1,8 +1,7 @@
 
 def call(String messageString = '') {
 
-
-    infoSharedLib  = sharedLibName
+    infoSharedLib  = env.sharedLibName
 
     infoBuildNumber = env.BUILD_NUMBER
     infoJobName = env.JOB_NAME
