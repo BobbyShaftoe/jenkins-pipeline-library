@@ -23,10 +23,10 @@ def call(body) {
                     sh 'scripts/env.sh'
 
                 }
-                stage('Read placeholder') {
-                    buildInfo()
-                    readFile 'lib/placeholder.txt'
-                }
+//                stage('Read placeholder') {
+//                    buildInfo()
+//                    readFile 'lib/placeholder.txt'
+//                }
 
                 stage('Archive workspace') {
                     buildInfo()
