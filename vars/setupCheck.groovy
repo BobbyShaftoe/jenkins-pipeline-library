@@ -12,6 +12,11 @@ def call(body) {
 
             try {
 
+                stage('CWD') {
+                    buildInfo()
+                    sh "pwd"
+                }
+
                 stage('List files in workspace') {
                     buildInfo()
                     sh 'ls -larst .'
