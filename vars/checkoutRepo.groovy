@@ -1,4 +1,6 @@
-def call(repo, repo_dir) {
+import com.thoughtworks.xstream.converters.basic.StringBufferConverter
+
+def call(String repo, String repo_dir) {
 
     nodeName = env.JOB_NODE_NAME
 
