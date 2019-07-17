@@ -15,6 +15,7 @@ def call(body) {
                 stage('CWD') {
                     buildInfo()
                     sh "pwd"
+
                 }
 
                 stage('List files in workspace') {
