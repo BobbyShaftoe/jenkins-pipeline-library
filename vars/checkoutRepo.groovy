@@ -1,4 +1,4 @@
-def call(String repo) {
+def call(String repo, String repo_dir) {
 
     nodeName = env.JOB_NODE_NAME
 
@@ -13,15 +13,14 @@ def call(String repo) {
                 dir('.') {
                     stage('Create repository directory') {
                         buildInfo(repoName)
-                        sh "mkdir -p $repoName"
+                        sh "mkdir -p $repo_dir/$repoName"
                     }
                 }
 
-                dir("$repoName") {
+                dir("$repo_dir/$repoName") {
                     stage('Checkout repository') {
                         buildInfo("$repo")
                         git poll: false, url: repo
-                        //stash allowEmpty: true, name: 'server-bootstraps-ansible', useDefaultExcludes: false
                     }
                 }
 
