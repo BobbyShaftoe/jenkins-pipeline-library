@@ -1,4 +1,4 @@
-def call(String repo, String repo_dir) {
+def call(repo, repo_dir) {
 
     nodeName = env.JOB_NODE_NAME
 
