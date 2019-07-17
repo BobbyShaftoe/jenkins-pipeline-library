@@ -7,17 +7,18 @@ def call(String repo, String repo_dir) {
         ansiColor('xterm') {
 
             repoName = repo.replaceAll('.*/(.*)\\.git', '\$1')
+            repoDir = repo_dir
 
             try {
 
                 dir('.') {
                     stage('Create repository directory') {
                         buildInfo(repoName)
-                        sh "mkdir -p $repo_dir/$repoName"
+                        sh "mkdir -p $repoDir/$repoName"
                     }
                 }
 
-                dir("$repo_dir/$repoName") {
+                dir("$repoDir/$repoName") {
                     stage('Checkout repository') {
                         buildInfo("$repo")
                         git poll: false, url: repo
